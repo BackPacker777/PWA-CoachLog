@@ -1,0 +1,15 @@
+@import 'utility';
+
+.vertical-center {
+     min-height: 14px;
+     margin-top: 8px;
+     margin-bottom: 7px;
+}
+
+.bottom {
+     position: fixed;
+     bottom: 5px;
+     width: 100%;
+     padding-top: 5px;
+     clear:both;
+}
