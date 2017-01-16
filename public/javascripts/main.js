@@ -12,7 +12,8 @@ class EventHandler {
      constructor() {
           EventHandler.prepApp();
           this.handleBegin();
-          this.handleEnter();
+          this.handleSubmit();
+          this.coach = [];
      }
 
      static prepApp() {
@@ -21,15 +22,15 @@ class EventHandler {
 
      handleBegin() {
           document.getElementById('begin').addEventListener('click', () => {
-               if (document.getElementById('coachId').value === '' || !/^\d{3,6}$/.test(document.getElementById('coachId').value)) {
+               if (document.getElementById('coachId').value === '' || !/^\d{6}$/.test(document.getElementById('coachId').value)) {
                     EventHandler.alertId();
                } else {
                     this.performAjax('XMLHttpRequest0', document.getElementById('coachId').value, (response) => {
                          if (response === 'false') {
-                              console.log(`FALSE Line 30`);
                               EventHandler.alertId();
                          } else {
-                              document.getElementById('coachName').innerHTML = response;
+                              this.coach = JSON.parse(response);
+                              document.getElementById('coachName').innerHTML = `${this.coach.firstName} ${this.coach.lastName}`;
                               document.getElementById('top').style.display = 'none';
                               document.getElementById('logEntry').style.display = 'block';
                          }
@@ -38,16 +39,53 @@ class EventHandler {
           });
      }
 
-     handleEnter() {
-          document.getElementById('enter').addEventListener('click', () => {
-               document.getElementById('eventDate').value = null;
-               document.getElementById('eventNumber').value = null;
-               document.getElementById('eventName').value = null;
+     handleSubmit() {
+          document.getElementById('coachingData').addEventListener('submit', (event) => {
+               event.preventDefault();
+               if (document.getElementById('eventDate').validity.valid && document.getElementById('eventName').validity.valid) {
+                    let fieldValues = [];
+                    fieldValues[0] = document.getElementById('eventDate').value;
+                    // fieldValues[1] = document.getElementById('eventNumber').value;
+                    fieldValues[1] = document.getElementById('eventName').value;
+                    if (this.validate(fieldValues) === true) {
+                         let data = new FormData(document.querySelector('#coachingData'));
+                         data.append('coachID', this.coach.coachID);
+                         data.append('lastName', this.coach.lastName);
+                         data.append('firstName', this.coach.firstName);
+                         console.log(data.eventDate);
+                         this.performAjax('XMLHttpRequest1', data, (response) => {
+
+                         });
+                         document.getElementById('eventDate').value = null;
+                         document.getElementById('eventNumber').value = null;
+                         document.getElementById('eventName').value = null;
+                    }
+               }
           });
      }
 
      static alertId() {
           alert('You must provide your proper NSP ID number to continue.');
+     }
+
+     validate(data) {
+          let validated = true;
+          for (let i = 0; i < data.length; i++) {
+               if (typeof data[i] === 'string') {
+                    if (data[i] === '') {
+                         alert(`Incorrect data entered. ${data[i]}`);
+                         validated = false;
+                         break;
+                    }
+               } else {
+                    if (!/^\d{1,20}$/.test(data[i])) {
+                         alert(`Incorrect data entered.`);
+                         validated = false;
+                         break;
+                    }
+               }
+          }
+          return validated;
      }
 
      performAjax(requestNum, sendToNode, callback) {

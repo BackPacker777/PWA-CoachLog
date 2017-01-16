@@ -4,7 +4,6 @@
 
 const FS = require ('fs'),
      DATASTORE = require('nedb'),
-     COACHES = new DATASTORE({ filename: './data/coaches_db.json', autoload: true }),
      DB = new DATASTORE({ filename: './data/log_db.json', autoload: true });
      this.data = [];
 
@@ -33,19 +32,19 @@ class DataHandler {
           });
      }
 
-     updateData(data) {
+     static updateData(data) {
           DB.update({ _id: data.id }, {
-                 instructor_id: data.instructor_id
+                 coachID: data.coachID
                , lastName: data.lastName
                , firstName: data.firstName
-               , date: data.date
-               , location: data.location
-               , event: data.event
+               , eventDate: data.eventDate
+               , eventNumber: data.eventNumber
+               , eventName: data.eventName
           }, { upsert: true,
                returnUpdatedDocs: true });
      }
 
-     addData(data) {
+     static addData(data) {
           delete data.id;  // remove id field out of JSON parameter
           DB.insert(data);
      }
@@ -62,12 +61,12 @@ class DataHandler {
       });
       }*/
 
-     queryData(data) {
+     static queryData(data) {
           DB.findOne({ _id: data.id }, (err, docs) => {
                if (docs == null) {
-                    this.addData(data);
+                    DataHandler.addData(data);
                } else {
-                    this.updateData(data);
+                    DataHandler.updateData(data);
                }
           });
      }

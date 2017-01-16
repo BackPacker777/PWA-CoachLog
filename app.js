@@ -70,7 +70,7 @@ class app {
 
      loadData(req, res, whichAjax) {
           if (whichAjax === 0) {
-               let name = '';
+               let coach = {};
                req.on('data', (data) => {
                     let found = false;
                     let coaches = DATA_HANDLER.loadCoachData('data/coaches.csv');
@@ -83,7 +83,11 @@ class app {
                     for (let i = 0; i < finalData.length; i++) {
                          if (data == finalData[i][0]) {
                               found = true;
-                              name = `${finalData[i][2]} ${finalData[i][1]}`;
+                              coach = {
+                                   'coachID': finalData[i][0],
+                                   'lastName': finalData[i][1],
+                                   'firstName': finalData[i][2]
+                              };
                               break;
                          }
                     }
@@ -91,8 +95,9 @@ class app {
                          res.writeHead(200, {'content-type': 'text/plain'});
                          res.end('false');
                     } else {
-                         res.writeHead(200, {'content-type': 'text/plain'});
-                         res.end(name);
+                         coach = JSON.stringify(coach);
+                         res.writeHead(200, {'content-type': 'application/json'});
+                         res.end(coach);
                     }
                });
           } else if (whichAjax === 1) {
@@ -104,7 +109,7 @@ class app {
                     next(err);
                }).on('end', () => {
                     // this.DataHandler.queryData(formData);
-                    new DATA_HANDLER().queryData(formData);
+                    DATA_HANDLER.queryData(formData);
                });
           }
           /*new DATA_HANDLER().loadLogData((docs) => {
