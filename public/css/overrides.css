@@ -17,4 +17,7 @@
   transition: all 0.3s ease-in;
   box-shadow: 0 0 10px 0 rgba(0, 255, 0, 0.67); }
 
+.bottom-border {
+  border: 1px solid #466d98; }
+
 /*# sourceMappingURL=overrides.css.map */

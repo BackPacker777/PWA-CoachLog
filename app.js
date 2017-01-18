@@ -83,21 +83,26 @@ class app {
                     for (let i = 0; i < finalData.length; i++) {
                          if (data == finalData[i][0]) {
                               found = true;
-                              coach = {
-                                   'coachID': finalData[i][0],
-                                   'lastName': finalData[i][1],
-                                   'firstName': finalData[i][2]
-                              };
+                              DATA_HANDLER.findRecords(finalData[i][0], (data2) => {
+                                   if (data2 !== false) {
+                                        coach = data2;
+                                   } else {
+                                        coach = {
+                                             'coachID': finalData[i][0],
+                                             'lastName': finalData[i][1],
+                                             'firstName': finalData[i][2]
+                                        };
+                                   }
+                                   coach = JSON.stringify(coach);
+                                   res.writeHead(200, {'content-type': 'application/json'});
+                                   res.end(coach);
+                              });
                               break;
                          }
                     }
                     if (found === false) {
                          res.writeHead(200, {'content-type': 'text/plain'});
                          res.end('false');
-                    } else {
-                         coach = JSON.stringify(coach);
-                         res.writeHead(200, {'content-type': 'application/json'});
-                         res.end(coach);
                     }
                });
           } else if (whichAjax === 1) {
@@ -108,16 +113,12 @@ class app {
                }).on('error', (err) => {
                     next(err);
                }).on('end', () => {
-                    // this.DataHandler.queryData(formData);
                     DATA_HANDLER.queryData(formData);
+                    formData = JSON.stringify(formData);
+                    res.writeHead(200, {'content-type': 'application/json'});
+                    res.end(formData);
                });
           }
-          /*new DATA_HANDLER().loadLogData((docs) => {
-               let jsonDocs = JSON.stringify(docs); // http://stackoverflow.com/questions/5892569/responding-with-a-json-object-in-nodejs-converting-object-array-to-json-string
-               res.writeHead(200, {'content-type': 'application/json'});
-               res.end(jsonDocs);
-               this.setEjsData();
-          });*/
      }
 
      setEjsData() {

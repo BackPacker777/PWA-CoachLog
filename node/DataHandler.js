@@ -24,10 +24,12 @@ class DataHandler {
           return FS.readFileSync(filePath, 'utf8');
      }
 
-     loadLogData(callback) {
-          DB.find({}, (err, docs) => {
-               if (docs.length != null) {
+     static findRecords(coach, callback) {
+          DB.find({ coachID: coach }, (err, docs) => {
+               if (docs.length > 0) {
                     callback(docs);
+               } else {
+                    callback(false);
                }
           });
      }
@@ -48,18 +50,6 @@ class DataHandler {
           delete data.id;  // remove id field out of JSON parameter
           DB.insert(data);
      }
-
-     /*queryData(data) { // keep as a reference for method below
-      const THAT = this; //change to arrow function later
-      // console.log(`DataHandler output: ${data.id}`);
-      DB.findOne({ _id: data.id }, function(err, docs) {
-      if (docs == null) {
-      THAT.addData(data);
-      } else {
-      THAT.updateData(data);
-      }
-      });
-      }*/
 
      static queryData(data) {
           DB.findOne({ _id: data.id }, (err, docs) => {

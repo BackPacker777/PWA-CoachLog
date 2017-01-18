@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="medium-12 columns medium-centered">
-        <h2 class="text-center">Teacher Training Event Log</h2>
+        <h2 class="text-center">Coach Training Event Log</h2>
     </div>
 </div>
 <br><br>
@@ -12,7 +12,7 @@
             <span class="label vertical-center">NSP ID:</span>
         </div>
         <div class="medium-2 columns text-left end">
-            <input type="text" id="coachId" name="coachId">
+            <input type="text" id="coachId0" name="coachId0" placeholder="6 digit NSP ID">
         </div>
     </div>
     <div class="row">
@@ -24,13 +24,20 @@
 <div id="logEntry">
     <div class="row">
         <div class="medium-12 columns">
-            <p>Welcome, <strong><span id="coachName"></span></strong>. Please log your training events.</p>
+            <p>Welcome, <strong><span id="coachName"></span></strong>. Here are your existing training events:</p>
+        </div>
+    </div>
+    <div id="existingEvents"></div>
+    <br>
+    <div class="row">
+        <div class="medium-12 columns">
+            <p>Please log your new training events:</p>
         </div>
     </div>
     <form id="coachingData" method="get">
-        <input type="hidden" id="coachID">
-        <input type="hidden" id="lastName">
-        <input type="hidden" id="firstName">
+        <input type="hidden" id="coachID" name="coachID">
+        <input type="hidden" id="lastName" name="lastName">
+        <input type="hidden" id="firstName" name="firstName">
         <div class="row">
             <div class="medium-2 column">
                 <span class="label">Event Date</span><input type="date" name="eventDate" id="eventDate" required>

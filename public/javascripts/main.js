@@ -22,17 +22,28 @@ class EventHandler {
 
      handleBegin() {
           document.getElementById('begin').addEventListener('click', () => {
-               if (document.getElementById('coachId').value === '' || !/^\d{6}$/.test(document.getElementById('coachId').value)) {
+               if (document.getElementById('coachId0').value === '' || !/^\d{6}$/.test(document.getElementById('coachId0').value)) {
                     EventHandler.alertId();
                } else {
-                    this.performAjax('XMLHttpRequest0', document.getElementById('coachId').value, (response) => {
+                    this.performAjax('XMLHttpRequest0', document.getElementById('coachId0').value, (response) => {
                          if (response === 'false') {
                               EventHandler.alertId();
                          } else {
                               this.coach = JSON.parse(response);
-                              document.getElementById('coachName').innerHTML = `${this.coach.firstName} ${this.coach.lastName}`;
                               document.getElementById('top').style.display = 'none';
                               document.getElementById('logEntry').style.display = 'block';
+                              if (Object.prototype.toString.call(this.coach) === '[object Array]') {
+                                   document.getElementById('coachName').innerHTML = `${this.coach[0].firstName} ${this.coach[0].lastName}`;
+                                   document.getElementById('coachID').value = this.coach[0].coachID;
+                                   document.getElementById('lastName').value = this.coach[0].lastName;
+                                   document.getElementById('firstName').value = this.coach[0].firstName;
+                                   this.updateEvents();
+                              } else {
+                                   document.getElementById('coachName').innerHTML = `${this.coach.firstName} ${this.coach.lastName}`;
+                                   document.getElementById('coachID').value = this.coach.coachID;
+                                   document.getElementById('lastName').value = this.coach.lastName;
+                                   document.getElementById('firstName').value = this.coach.firstName;
+                              }
                          }
                     });
                }
@@ -45,16 +56,13 @@ class EventHandler {
                if (document.getElementById('eventDate').validity.valid && document.getElementById('eventName').validity.valid) {
                     let fieldValues = [];
                     fieldValues[0] = document.getElementById('eventDate').value;
-                    // fieldValues[1] = document.getElementById('eventNumber').value;
-                    fieldValues[1] = document.getElementById('eventName').value;
+                    fieldValues[1] = document.getElementById('eventNumber').value;
+                    fieldValues[2] = document.getElementById('eventName').value;
                     if (this.validate(fieldValues) === true) {
                          let data = new FormData(document.querySelector('#coachingData'));
-                         data.append('coachID', this.coach.coachID);
-                         data.append('lastName', this.coach.lastName);
-                         data.append('firstName', this.coach.firstName);
-                         console.log(data.eventDate);
                          this.performAjax('XMLHttpRequest1', data, (response) => {
-
+                              this.coach = JSON.parse(response);
+                              this.updateEvents();
                          });
                          document.getElementById('eventDate').value = null;
                          document.getElementById('eventNumber').value = null;
@@ -64,12 +72,46 @@ class EventHandler {
           });
      }
 
+     updateEvents() {
+          if (! document.getElementById('eventsHeader')) {
+               document.getElementById('existingEvents').innerHTML = (`
+                    <div class="row" id="eventsHeader">
+                         <div class="medium-4 columns text-center bottom-border"><strong>EVENT DATE</strong></div>
+                         <div class="medium-4 columns text-center bottom-border"><strong>EVENT NUMBER</strong></div>
+                         <div class="medium-4 columns text-center bottom-border"><strong>EVENT NAME</strong></div>
+                    </div>
+               `);
+               // new FadeStuff('in', 'eventsHeader').doFade();
+          }
+          if (Object.prototype.toString.call(this.coach) === '[object Array]') {
+               for (let i = 0; i < this.coach.length; i++) {
+                    let eventNum = `event${i}`;
+                    document.getElementById('existingEvents').innerHTML += (`
+                         <div class="row" id=${eventNum}>
+                              <div class="medium-4 columns">${this.coach[i].eventDate}</div>
+                              <div class="medium-4 columns">${this.coach[i].eventNumber}</div>
+                              <div class="medium-4 columns">${this.coach[i].eventName}</div>
+                         </div>
+                    `);
+               }
+          } else {
+               document.getElementById('existingEvents').innerHTML += (`
+                    <div class="row" id=eventNum>
+                         <div class="medium-4 columns">${this.coach.eventDate}</div>
+                         <div class="medium-4 columns">${this.coach.eventNumber}</div>
+                         <div class="medium-4 columns">${this.coach.eventName}</div>
+                    </div>
+               `);
+          }
+     }
+
      static alertId() {
           alert('You must provide your proper NSP ID number to continue.');
      }
 
      validate(data) {
           let validated = true;
+          data[1] = 1;
           for (let i = 0; i < data.length; i++) {
                if (typeof data[i] === 'string') {
                     if (data[i] === '') {
@@ -101,44 +143,6 @@ class EventHandler {
           };
      }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class FadeStuff {
      constructor(direction, fadeWhat) {
