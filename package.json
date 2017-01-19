@@ -13,7 +13,7 @@
     "email": "hbates@northmen.org"
   },
   "scripts": {
-    "start": "node ./bin/server"
+    "start": "node bin/server"
   },
   "repository": {
     "type": "git",
