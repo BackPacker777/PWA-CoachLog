@@ -15,10 +15,12 @@ class app {
      }
 
      loadServer() {
-          const HTTPS = require('https'),
+          // const HTTPS = require('https'),
+          const HTTP = require('http'),
                EJS = require('ejs'),
                PORT = process.env.PORT || 8443,
-               SERVER = HTTPS.createServer(this.certData, (req, res) => {
+               // SERVER = HTTPS.createServer(this.certData, (req, res) => {
+               SERVER = HTTP.createServer((req, res) => {
                     let httpHandler = (err, str, contentType) => {  //http://stackoverflow.com/questions/336859/var-functionname-function-vs-function-functionname
                          if (err) {
                               res.writeHead(500, { 'Content-Type': 'text/plain' });
