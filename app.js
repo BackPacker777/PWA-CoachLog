@@ -17,7 +17,7 @@ class app {
      loadServer() {
           const HTTPS = require('https'),
                EJS = require('ejs'),
-               PORT = process.env.PORT || 9443,
+               PORT = process.env.PORT || 8443,
                SERVER = HTTPS.createServer(this.certData, (req, res) => {
                     let httpHandler = (err, str, contentType) => {  //http://stackoverflow.com/questions/336859/var-functionname-function-vs-function-functionname
                          if (err) {
