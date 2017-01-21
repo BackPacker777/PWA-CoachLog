@@ -23,5 +23,10 @@
 }
 
 .bottom-border {
-     border: 1px solid #466d98;
+     border-bottom: 1px solid #466d98;
+     border-right: 1px solid #466d98;
+}
+
+.shadow {
+     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }

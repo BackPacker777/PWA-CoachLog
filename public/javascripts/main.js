@@ -14,6 +14,7 @@ class EventHandler {
           this.handleBegin();
           this.handleSubmit();
           this.coach = [];
+          this.eventNum = null;
      }
 
      static prepApp() {
@@ -38,6 +39,7 @@ class EventHandler {
                                    document.getElementById('lastName').value = this.coach[0].lastName;
                                    document.getElementById('firstName').value = this.coach[0].firstName;
                                    this.updateEvents();
+                                   FadeStuff.doFade('in','logEntry');
                               } else {
                                    document.getElementById('coachName').innerHTML = `${this.coach.firstName} ${this.coach.lastName}`;
                                    document.getElementById('coachID').value = this.coach.coachID;
@@ -76,17 +78,18 @@ class EventHandler {
           if (! document.getElementById('eventsHeader')) {
                document.getElementById('existingEvents').innerHTML = (`
                     <div class="row" id="eventsHeader">
-                         <div class="medium-4 columns text-center bottom-border"><strong>EVENT DATE</strong></div>
-                         <div class="medium-4 columns text-center bottom-border"><strong>EVENT NUMBER</strong></div>
-                         <div class="medium-4 columns text-center bottom-border"><strong>EVENT NAME</strong></div>
+                         <span class="medium-4 columns text-center bottom-border"><strong>EVENT DATE</strong></span>
+                         <span class="medium-4 columns text-center bottom-border"><strong>EVENT NUMBER</strong></span>
+                         <span class="medium-4 columns text-center bottom-border"><strong>EVENT NAME</strong></span>
                     </div>
                `);
           }
           if (Object.prototype.toString.call(this.coach) === '[object Array]') {
                for (let i = 0; i < this.coach.length; i++) {
-                    let eventNum = `event${i}`;
+                    this.eventNum = i;
+                    // let eventNum = `event${i}`;
                     document.getElementById('existingEvents').innerHTML += (`
-                         <div class="row" id=${eventNum}>
+                         <div class="row" id="event${this.eventNum}">
                               <div class="medium-4 columns">${this.coach[i].eventDate}</div>
                               <div class="medium-4 columns">${this.coach[i].eventNumber}</div>
                               <div class="medium-4 columns">${this.coach[i].eventName}</div>
@@ -94,13 +97,15 @@ class EventHandler {
                     `);
                }
           } else {
+               this.eventNum++;
                document.getElementById('existingEvents').innerHTML += (`
-                    <div class="row" id=eventNum>
+                    <div class="row" id="event${this.eventNum}">
                          <div class="medium-4 columns">${this.coach.eventDate}</div>
                          <div class="medium-4 columns">${this.coach.eventNumber}</div>
                          <div class="medium-4 columns">${this.coach.eventName}</div>
                     </div>
                `);
+               FadeStuff.doFade('in',`event${this.eventNum}`);
           }
      }
 
@@ -140,6 +145,43 @@ class EventHandler {
                     return callback(XHR.responseText);
                }
           };
+     }
+}
+
+class FadeStuff {
+
+     static doFade(direction, fadeWhat) {
+          //http://www.chrisbuttery.com/articles/fade-in-fade-out-with-javascript/
+          let div = document.getElementById(fadeWhat);
+          if (direction == "in") {
+               div.style.opacity = 0;
+               div.style.visibility = 'visible';
+               (function fade() {
+                    let val = parseFloat(div.style.opacity);
+                    if (!((val += .01) > 1)) {
+                         div.style.opacity = val;
+                         requestAnimationFrame(fade);
+                    }
+               })();
+          } else if (direction == "out") {
+               div.style.opacity = 1;
+               (function fade() {
+                    if ((div.style.opacity -= .01) <= 0) {
+                         div.style.visibility = 'hidden';
+                    } else {
+                         requestAnimationFrame(fade);
+                    }
+               })();
+          } else {
+               div.style.opacity = 1;
+               (function fade() {
+                    if ((div.style.opacity -= .01) <= 0) {
+                         div.style.display = 'none';
+                    } else {
+                         requestAnimationFrame(fade);
+                    }
+               })();
+          }
      }
 }
 
