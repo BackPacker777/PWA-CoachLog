@@ -1,8 +1,10 @@
 {
-    "name": "",
+    "lang": "en",
+    "name": "NMR Coach Training Log",
+    "short_name": "CoachLog",
     "icons": [
         {
-            "src": "e:/favicons/android-chrome-96x96.png",
+            "src": "/public/images/favicons/android-chrome-96x96.png",
             "sizes": "96x96",
             "type": "image/png"
         }
